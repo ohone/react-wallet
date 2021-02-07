@@ -33,7 +33,6 @@ export const getEthBalance = async (walletAddress: string): Promise<string> => {
 export const getBalance = async (tokenAddress: string, walletAddress: string): Promise<number> => {
     const contract = new web3.eth.Contract(miniABI, tokenAddress);
     const balance = await contract.methods.balanceOf(walletAddress).call();
-    alert(balance);
     console.log(balance);
     return balance;
   }

@@ -12,10 +12,9 @@ function App() {
   const [tokens, setTokens] = React.useState(new Map<Token,number>());
   const [ethBalance, setEthBalance] = React.useState<string | null>(null)
 
-  const handleAddToken = async (tokenAddress : string) => {
+  const handleAddToken = async (tokenAddress : string): Promise<void> => {
     if (Array.from(tokens.keys()).some(item => item.address == tokenAddress)){
-      alert("Token already in wallet dumbass.");
-      return;
+      return Promise.reject("token already in wallet")
     }
     
     let token : Token ={
@@ -28,9 +27,10 @@ function App() {
       let newMap = new Map<Token,number>(tokens);
       newMap.set(token, tokenValue);
       setTokens(newMap);
+      return undefined;
     }
     catch{
-      alert("error resolving token");
+      return Promise.reject("error resolving token");
     }
   }
 
@@ -39,14 +39,6 @@ function App() {
     setAddress(address);
     setEthBalance(balance);
   }
-
-  let wallet = address 
-    ? ( <Wallet 
-      address={address} 
-      ethBalance={ethBalance ?? "error"}
-      tokens={tokens} 
-      handleAddToken={(token) => handleAddToken(token)}/>) 
-    : (<div/>)
 
   return (
     <div className="App">
@@ -57,9 +49,13 @@ function App() {
         </p>
       </header>
       <WalletSearch onAddressEntered={t => handleAddressChange(t)}/>
-      <div className='Wallet'>
-        {wallet}
-      </div>
+      {address && 
+        <Wallet 
+        address={address} 
+        ethBalance={ethBalance ?? "error"}
+        tokens={tokens} 
+        handleAddToken={(token) => handleAddToken(token)}/>
+      }
     </div>
   );
 }

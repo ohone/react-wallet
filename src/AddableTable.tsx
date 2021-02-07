@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
-import { Table, Button, Input } from "antd";
-import { Modal } from 'react-modal';
+import { Table, Button, Input, Alert } from "antd";
+import Modal from 'react-modal';
 import { Token } from './primitives/Token';
+import './AddableTable.css'
+import { AddTokenModal } from './AddTokenModal';
 
 const columns =[
     {
@@ -29,39 +31,35 @@ const dataToDataSource = (data: Map<Token,number>) => {
 
 export type AddableTableProps = {
     tokens: Map<Token,number>,
-    addToken: (tokenAddress: string) => Promise<boolean>;
+    addToken: (tokenAddress: string) => Promise<void>;
 }
 
 export const AddableTable = ({tokens, addToken: tryAddToken}: AddableTableProps) => {
     
     const [isModalVisible, setModalVisible] = useState(false);
-    const [confirmLoading, setConfirmLoading] = useState(false);
-    const handleModalCancel = () => {
+
+    const hideModal = () => {
         setModalVisible(false);
     }
 
-    const handleModalSubmit = () => {
-
+    const showModal = () => {
+        setModalVisible(true);
     }
 
+    let data = dataToDataSource(tokens);
+
     return <div className="AddableTable">
-        <Table 
-        dataSource={dataToDataSource(tokens)} 
-        columns={columns}/>
-        <Button onClick={() => setModalVisible(true)}>Add Token</Button>
-        <Modal 
-        title="add token" 
-        visible={isModalVisible}
-        confirmLoading={confirmLoading}    
-        onOk={} 
-        onCancel={handleModalCancel}>
-            <Input 
-            className='AddTokenInput' 
-            placeholder='enter token address' 
-            size='large' 
-            onPressEnter={e => {
-                tryAddToken(e.currentTarget.value)
-                }}/>
-        </Modal>
+        {data.length > 0 &&
+            <Table 
+            pagination={false}
+            showHeader={false}
+            dataSource={dataToDataSource(tokens)} 
+            columns={columns}/>
+        }
+        <Button className='AddTokenButton' onClick={showModal} block>+</Button>
+        <AddTokenModal 
+        isModalVisible={isModalVisible} 
+        tryAddToken={tryAddToken}
+        onRequestClose={hideModal}/>
     </div>
 }
