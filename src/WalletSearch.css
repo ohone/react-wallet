@@ -1,0 +1,9 @@
+.TokenList{
+    max-width: 50%;
+    align-items: center;
+    border: 10px, #500000;
+}
+
+.WalletInput{
+    max-width: 50%;
+}
