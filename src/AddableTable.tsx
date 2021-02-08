@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Table, Button, Tooltip } from "antd";
 import { Token } from './primitives/Token';
 import './AddableTable.css'

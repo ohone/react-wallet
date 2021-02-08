@@ -1,9 +1,9 @@
 import { Token } from './primitives/Token';
 import { Card } from 'antd';
-import { Input, Col, Row } from 'antd';
 import 'antd/dist/antd.css';
 import './Wallet.css';
 import { AddableTable } from './AddableTable';
+import React from 'react';
 
 export type WalletTokens = {
     [tokenAddress: string]: number
