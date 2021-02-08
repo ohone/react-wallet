@@ -47,6 +47,7 @@ export const AddTokenModal = ({isModalVisible, tryAddToken, onRequestClose}: Add
                     .then(() => {
                         setMessage("Done"); 
                         setMessageState("success");
+                        onRequestClose();
                     })
                     .catch(err => {
                         setMessage(err); 
