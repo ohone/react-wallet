@@ -1,4 +1,5 @@
 .WalletInput{
     margin-left: 30%;
     margin-right: 30%;
+    display: flex;
 }
