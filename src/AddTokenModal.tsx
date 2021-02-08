@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import Modal from 'react-modal';
-import { Alert, Input } from "antd";
+import { Alert, Input, Card } from "antd";
+import './AddTokenModal.css'
 
 export type AddTokenModalProps = {
     isModalVisible: boolean;
@@ -23,6 +24,7 @@ export const AddTokenModal = ({isModalVisible, tryAddToken, onRequestClose}: Add
         <Alert message={errorMessage} type="error" showIcon/>
     
     return <Modal 
+        className='AddTokenModal'
         contentLabel="add token" 
         isOpen={isModalVisible}
         shouldCloseOnOverlayClick={true}
@@ -34,22 +36,24 @@ export const AddTokenModal = ({isModalVisible, tryAddToken, onRequestClose}: Add
             {isErrorVisible &&
                 GetErrorMessage()
             }
-            <Input 
-            className='AddTokenInput' 
-            placeholder='enter token address' 
-            size='large' 
-            onPressEnter={e => {
-                tryAddToken(e.currentTarget.value)
-                .then(() => {
-                    setErrorVisible(false);
-                    setSuccessMessage("Done"); 
-                    setSuccessVisible(true);
-                })
-                .catch(err => {
-                    setSuccessVisible(false);
-                    setErrorMessage(err); 
-                    setErrorVisible(true);
-                });
-                }}/>
+            <Card title='Add Token'>
+                <Input 
+                className='AddTokenInput' 
+                placeholder='enter token address' 
+                size='large' 
+                onPressEnter={e => {
+                    tryAddToken(e.currentTarget.value)
+                    .then(() => {
+                        setErrorVisible(false);
+                        setSuccessMessage("Done"); 
+                        setSuccessVisible(true);
+                    })
+                    .catch(err => {
+                        setSuccessVisible(false);
+                        setErrorMessage(err); 
+                        setErrorVisible(true);
+                    });
+                    }}/>
+            </Card>
         </Modal>
 }

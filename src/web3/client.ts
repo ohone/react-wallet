@@ -1,26 +1,10 @@
 import Web3 from 'web3';
-const web3 = new Web3(
-    new Web3.providers.WebsocketProvider("wss://mainnet.infura.io/ws/v3/ff2809ef7851478eaefc9fe4b5539f11"))
+import { Contract } from 'web3-eth-contract';
+import { erc20ABI } from './erc20ABI';
 
-const miniABI: any = [
-    // balanceOf
-    {
-      "constant":true,
-      "inputs":[{"name":"_owner", "type":"address"}],
-      "name":"balanceOf",
-      "outputs":[{"name":"balance","type":"uint256"}],
-      "type":"function"
-    },
-    // decimals
-     {
-      "constant":true,
-      "inputs":[],
-      "name":"decimals",
-      "outputs":[{"name":"","type":"uint8"}],
-      "type":"function"
-    } 
-  ]
-  
+const web3 = new Web3(
+    new Web3.providers.WebsocketProvider("wss://mainnet.infura.io/ws/v3/somekey"))
+
 export const getEthBalance = async (walletAddress: string): Promise<string> => {
     let balance = web3.eth.getBalance(walletAddress, (Error) => {
         if (Error){
@@ -31,8 +15,18 @@ export const getEthBalance = async (walletAddress: string): Promise<string> => {
 }
 
 export const getBalance = async (tokenAddress: string, walletAddress: string): Promise<number> => {
-    const contract = new web3.eth.Contract(miniABI, tokenAddress);
-    const balance = await contract.methods.balanceOf(walletAddress).call();
-    console.log(balance);
-    return balance;
-  }
+  const contract = new web3.eth.Contract(erc20ABI, tokenAddress);
+  let balance = await getTokenBalance(contract, tokenAddress);
+  console.log(balance);
+  return balance;
+}
+
+export const getTokenSymbol = (contract: Contract) : Promise<string> => 
+ contract.methods.symbol().call();
+
+export const getTokenName = (context: Contract) : Promise<string> =>
+ context.methods.name().call();
+
+export const getTokenBalance = (contract: Contract, address: string): Promise<number> => {
+  return contract.methods.balanceOf(address).call();
+}
