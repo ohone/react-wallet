@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import Modal from 'react-modal';
 import { Alert, Input, Card } from "antd";
 import './AddTokenModal.css'
@@ -9,32 +9,33 @@ export type AddTokenModalProps = {
     onRequestClose: () => void;
 }
 
-
 export const AddTokenModal = ({isModalVisible, tryAddToken, onRequestClose}: AddTokenModalProps) => {
     
     const [isErrorVisible, setErrorVisible] = useState(false);
     const [isSuccessVisible, setSuccessVisible] = useState(false);
     
-    const [errorMessage, setErrorMessage] = useState<string | null>(null);
-    const [successMessage, setSuccessMessage] = useState<string | null>(null);
+    const [message, setMessage] = useState<string | null>(null);
 
-    const GetSuccessMessage = () => 
-        <Alert message={successMessage} type="success" showIcon/>
-    const GetErrorMessage = () => 
-        <Alert message={errorMessage} type="error" showIcon/>
-    
+    const GetMessage = (success: boolean, message: string) => {
+        return <Alert message={message} type={success ? "success" : "error"}  showIcon/>
+    }
+
     return <Modal 
         className='AddTokenModal'
         contentLabel="add token" 
         isOpen={isModalVisible}
         shouldCloseOnOverlayClick={true}
         shouldCloseOnEsc={true}
-        onRequestClose={onRequestClose}>
+        onRequestClose={() => {
+            onRequestClose(); 
+            setErrorVisible(false); 
+            setSuccessVisible(false);
+            }}>
             {isSuccessVisible &&
-                GetSuccessMessage()
+                GetMessage(true, message!)
             }
             {isErrorVisible &&
-                GetErrorMessage()
+                GetMessage(false, message!)
             }
             <Card title='Add Token'>
                 <Input 
@@ -45,12 +46,12 @@ export const AddTokenModal = ({isModalVisible, tryAddToken, onRequestClose}: Add
                     tryAddToken(e.currentTarget.value)
                     .then(() => {
                         setErrorVisible(false);
-                        setSuccessMessage("Done"); 
+                        setMessage("Done"); 
                         setSuccessVisible(true);
                     })
                     .catch(err => {
                         setSuccessVisible(false);
-                        setErrorMessage(err); 
+                        setMessage(err); 
                         setErrorVisible(true);
                     });
                     }}/>
