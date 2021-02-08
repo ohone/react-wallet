@@ -3,7 +3,7 @@ import { Contract } from 'web3-eth-contract';
 import { erc20ABI } from './erc20ABI';
 
 const web3 = new Web3(
-    new Web3.providers.WebsocketProvider("wss://mainnet.infura.io/ws/v3/ff2809ef7851478eaefc9fe4b5539f11"))
+    new Web3.providers.WebsocketProvider("wss://mainnet.infura.io/ws/v3/[key]"))
 
 export const getEthBalance = async (walletAddress: string): Promise<string> => {
     let balance = web3.eth.getBalance(walletAddress, (Error) => {
