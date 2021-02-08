@@ -9,7 +9,7 @@ export type AddTokenModalProps = {
     onRequestClose: () => void;
 }
 
-type MessageState = null | 'error' | 'success';
+type MessageState = null | 'error';
 
 export const AddTokenModal = ({isModalVisible, tryAddToken, onRequestClose}: AddTokenModalProps) => {
     const [message, setMessage] = useState<string | null>(null);
@@ -45,8 +45,6 @@ export const AddTokenModal = ({isModalVisible, tryAddToken, onRequestClose}: Add
                 onPressEnter={e => {
                     tryAddToken(e.currentTarget.value)
                     .then(() => {
-                        setMessage("Done"); 
-                        setMessageState("success");
                         onRequestClose();
                     })
                     .catch(err => {
