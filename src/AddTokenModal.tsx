@@ -14,20 +14,15 @@ type MessageState = null | 'error' | 'success';
 export const AddTokenModal = ({isModalVisible, tryAddToken, onRequestClose}: AddTokenModalProps) => {
     const [message, setMessage] = useState<string | null>(null);
 
-    const GetMessage = (success: boolean, message: string) => {
-        return <Alert message={message} type={success ? "success" : "error"}  showIcon/>
+    const GetMessage = (state: Exclude<MessageState, null>, message: string) => {
+        return <Alert message={message} type={state}  showIcon/>
     }
 
     const [messageState, setMessageState] = useState<MessageState>(null);
 
     let errorMessage;
-    switch(messageState){
-        case "success":
-            errorMessage = GetMessage(true, message!);
-            break;
-        case "error":
-            errorMessage = GetMessage(false, message!);
-            break;
+    if (messageState){
+        errorMessage = GetMessage(messageState, message!);
     }
 
     return <Modal 
@@ -50,12 +45,12 @@ export const AddTokenModal = ({isModalVisible, tryAddToken, onRequestClose}: Add
                 onPressEnter={e => {
                     tryAddToken(e.currentTarget.value)
                     .then(() => {
-                        setMessageState("success");
                         setMessage("Done"); 
+                        setMessageState("success");
                     })
                     .catch(err => {
-                        setMessageState("error");
                         setMessage(err); 
+                        setMessageState("error");
                     });
                     }}/>
             </Card>
