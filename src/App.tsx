@@ -4,7 +4,7 @@ import './App.css';
 import { Wallet } from './Wallet';
 import { WalletSearch } from './WalletSearch';
 import { Token } from './primitives/Token';
-import { getBalance, getEthBalance } from './web3/client';
+import { getBalance, getEthBalance, getTokenName, getTokenSymbol } from './web3/client';
 
 function App() {
 
@@ -17,14 +17,14 @@ function App() {
       return Promise.reject("token already in wallet")
     }
     
-    let token : Token ={
-      address: tokenAddress,
-      name: tokenAddress
-    }
-
     try{
-      let tokenValue = await getBalance(tokenAddress, address!)
       let newMap = new Map<Token,number>(tokens);
+      let token : Token = {
+        name: await getTokenName(tokenAddress),
+        symbol: await getTokenSymbol(tokenAddress),
+        address: tokenAddress
+      }
+      let tokenValue = await getBalance(tokenAddress, address!)
       newMap.set(token, tokenValue);
       setTokens(newMap);
       return undefined;

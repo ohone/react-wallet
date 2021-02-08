@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { Table, Button, Tooltip } from "antd";
 import { Token } from './primitives/Token';
 import './AddableTable.css'
@@ -21,12 +21,11 @@ const dataToDataSource = (data: Map<Token,number>) => {
     let items = Array.from(data);
     return items.map(item => {
         return  {
-            symbol: item[0].name,
+            symbol: item[0].symbol,
             amount: item[1]
         }
     })
 }
-
 
 export type AddableTableProps = {
     tokens: Map<Token,number>,
