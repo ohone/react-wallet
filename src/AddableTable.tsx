@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
-import { Table, Button, Input, Alert } from "antd";
-import Modal from 'react-modal';
+import { Table, Button, Tooltip } from "antd";
 import { Token } from './primitives/Token';
 import './AddableTable.css'
 import { AddTokenModal } from './AddTokenModal';
@@ -56,7 +55,9 @@ export const AddableTable = ({tokens, addToken: tryAddToken}: AddableTableProps)
             dataSource={dataToDataSource(tokens)} 
             columns={columns}/>
         }
-        <Button className='AddTokenButton' onClick={showModal} block>+</Button>
+        <Tooltip title={"Add Token"} >
+            <Button className='AddTokenButton' onClick={showModal} block>+</Button>
+        </Tooltip>
         <AddTokenModal 
         isModalVisible={isModalVisible} 
         tryAddToken={tryAddToken}
