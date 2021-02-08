@@ -9,15 +9,25 @@ export type AddTokenModalProps = {
     onRequestClose: () => void;
 }
 
+type MessageState = null | 'error' | 'success';
+
 export const AddTokenModal = ({isModalVisible, tryAddToken, onRequestClose}: AddTokenModalProps) => {
-    
-    const [isErrorVisible, setErrorVisible] = useState(false);
-    const [isSuccessVisible, setSuccessVisible] = useState(false);
-    
     const [message, setMessage] = useState<string | null>(null);
 
     const GetMessage = (success: boolean, message: string) => {
         return <Alert message={message} type={success ? "success" : "error"}  showIcon/>
+    }
+
+    const [messageState, setMessageState] = useState<MessageState>(null);
+
+    let errorMessage;
+    switch(messageState){
+        case "success":
+            errorMessage = GetMessage(true, message!);
+            break;
+        case "error":
+            errorMessage = GetMessage(false, message!);
+            break;
     }
 
     return <Modal 
@@ -28,15 +38,10 @@ export const AddTokenModal = ({isModalVisible, tryAddToken, onRequestClose}: Add
         shouldCloseOnEsc={true}
         onRequestClose={() => {
             onRequestClose(); 
-            setErrorVisible(false); 
-            setSuccessVisible(false);
+            setMessageState(null);
             }}>
-            {isSuccessVisible &&
-                GetMessage(true, message!)
-            }
-            {isErrorVisible &&
-                GetMessage(false, message!)
-            }
+
+            {errorMessage}
             <Card title='Add Token'>
                 <Input 
                 className='AddTokenInput' 
@@ -45,14 +50,12 @@ export const AddTokenModal = ({isModalVisible, tryAddToken, onRequestClose}: Add
                 onPressEnter={e => {
                     tryAddToken(e.currentTarget.value)
                     .then(() => {
-                        setErrorVisible(false);
+                        setMessageState("success");
                         setMessage("Done"); 
-                        setSuccessVisible(true);
                     })
                     .catch(err => {
-                        setSuccessVisible(false);
+                        setMessageState("error");
                         setMessage(err); 
-                        setErrorVisible(true);
                     });
                     }}/>
             </Card>
