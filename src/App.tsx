@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import logo from './eth-diamond-rainbow.png';
 import './App.css';
 import { Wallet } from './Wallet';
@@ -13,9 +13,34 @@ import {
 
 function App() {
 
+  const sw = navigator.serviceWorker;
+
+  
   const [address, setAddress] = React.useState<string | null>(null);
   const [tokens, setTokens] = React.useState(new Map<Token,number>());
   const [ethBalance, setEthBalance] = React.useState<string | null>(null)
+
+  useEffect(() => {
+    if (sw){
+      window.addEventListener( 'load', () => {
+        sw.register('./service-worker.ts' )
+        .then(() => sw.ready)
+        .then( () => {
+          sw.addEventListener( 'message' , ( { data } ) => {
+            if ( data?.state !== undefined ){
+              setAddress( data.state );
+            }
+          })
+        })
+      })
+    }
+  }, [setAddress, sw])
+
+  const stateToServiceWorker = (data : string) => {
+    if (sw.controller){
+      sw.controller.postMessage(data);
+    }
+  }
 
   const handleAddToken = async (tokenAddress : string): Promise<void> => {
     if (Array.from(tokens.keys()).some(item => item.address == tokenAddress)){
@@ -41,6 +66,7 @@ function App() {
 
   const handleAddressChange = async (address : string) => {
     let balance = await getEthBalance(address);
+    stateToServiceWorker(address);
     setAddress(address);
     setEthBalance(balance);
   }
