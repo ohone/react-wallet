@@ -31,12 +31,20 @@ export const getTokenName = (tokenAddress: string) : Promise<string> => {
   return getTokenNameForContract(contract);
 }
 
+export const getDecimals = (tokenAddress: string) : Promise<number> => 
+  getDecimalsForContract(contractForAddress(tokenAddress)); 
+
+const contractForAddress = (tokenAddress: string) : Contract => 
+  new web3.eth.Contract(erc20ABI, tokenAddress);
+
 const getTokenSymbolForContract = (contract: Contract) : Promise<string> => 
  contract.methods.symbol().call();
 
 const getTokenNameForContract = (context: Contract) : Promise<string> =>
  context.methods.name().call();
 
-const getTokenBalanceForContractWithAddress = (contract: Contract, address: string): Promise<number> => {
-  return contract.methods.balanceOf(address).call();
-}
+const getDecimalsForContract = (context: Contract) : Promise<number> => 
+  context.methods.decimals().call();
+
+const getTokenBalanceForContractWithAddress = (contract: Contract, address: string): Promise<number> => 
+  contract.methods.balanceOf(address).call();

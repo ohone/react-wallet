@@ -4,7 +4,12 @@ import './App.css';
 import { Wallet } from './Wallet';
 import { WalletSearch } from './WalletSearch';
 import { Token } from './primitives/Token';
-import { getBalance, getEthBalance, getTokenName, getTokenSymbol } from './web3/client';
+import { 
+  getBalance, 
+  getEthBalance, 
+  getTokenName, 
+  getTokenSymbol,
+  getDecimals } from './web3/client';
 
 function App() {
 
@@ -22,12 +27,12 @@ function App() {
       let token : Token = {
         name: await getTokenName(tokenAddress),
         symbol: await getTokenSymbol(tokenAddress),
+        decimals: await getDecimals(tokenAddress),
         address: tokenAddress
-      }
-      let tokenValue = await getBalance(tokenAddress, address!)
+      };
+      let tokenValue = transformBalance(await getBalance(tokenAddress, address!), token.decimals);
       newMap.set(token, tokenValue);
       setTokens(newMap);
-      return undefined;
     }
     catch{
       return Promise.reject("error resolving token");
@@ -61,3 +66,7 @@ function App() {
 }
 
 export default App;
+
+const transformBalance = (balance: number, decimals: number) : number => {
+  return balance / (10**decimals);
+}

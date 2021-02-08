@@ -7,7 +7,6 @@ export interface WalletSearchProps {
 }
 
 export const WalletSearch = ({onAddressEntered} : WalletSearchProps) => {
-
     const [text, updateText] = React.useState<string | null>(null);
 
     return <div className='WalletInput'>
