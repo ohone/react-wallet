@@ -5,11 +5,7 @@ import './Wallet.css';
 import { AddableTable } from './AddableTable';
 import React from 'react';
 
-export type WalletTokens = {
-    [tokenAddress: string]: number
-}
-
-export interface WalletProps {
+export type WalletProps = {
     address: string;
     ethBalance: string;
     tokens: Map<Token,number>;

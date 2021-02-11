@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { ReactComponentElement, useEffect } from 'react';
 import logo from './eth-diamond-rainbow.png';
 import './App.css';
 import { Wallet } from './Wallet';
@@ -10,37 +10,15 @@ import {
   getTokenName, 
   getTokenSymbol,
   getDecimals } from './web3/client';
+import { Route, RouteComponentProps, BrowserRouter, useHistory, Switch, useLocation, useParams } from 'react-router-dom';
 
 function App() {
 
   const sw = navigator.serviceWorker;
 
-  
   const [address, setAddress] = React.useState<string | null>(null);
   const [tokens, setTokens] = React.useState(new Map<Token,number>());
   const [ethBalance, setEthBalance] = React.useState<string | null>(null)
-
-  useEffect(() => {
-    if (sw){
-      window.addEventListener( 'load', () => {
-        sw.register('./service-worker.ts' )
-        .then(() => sw.ready)
-        .then( () => {
-          sw.addEventListener( 'message' , ( { data } ) => {
-            if ( data?.state !== undefined ){
-              setAddress( data.state );
-            }
-          })
-        })
-      })
-    }
-  }, [setAddress, sw])
-
-  const stateToServiceWorker = (data : string) => {
-    if (sw.controller){
-      sw.controller.postMessage(data);
-    }
-  }
 
   const handleAddToken = async (tokenAddress : string): Promise<void> => {
     if (Array.from(tokens.keys()).some(item => item.address == tokenAddress)){
@@ -66,11 +44,20 @@ function App() {
 
   const handleAddressChange = async (address : string) => {
     let balance = await getEthBalance(address);
-    stateToServiceWorker(address);
+    history.push(address);
     setAddress(address);
     setEthBalance(balance);
   }
+  const history = useHistory();
+  const walletSearch = () => (<WalletSearch onAddressEntered={t => handleAddressChange(t)}/>);
+  const walletView = 
+  (address: string) => (<Wallet 
+    address={address!} 
+    ethBalance={ethBalance ?? "error"}
+    tokens={tokens} 
+    handleAddToken={(token) => handleAddToken(token)}/>);
 
+  const location = useLocation();
   return (
     <div className="App">
       <header className="App-header">
@@ -79,14 +66,10 @@ function App() {
           <code>Wallet Manager</code>
         </p>
       </header>
-      <WalletSearch onAddressEntered={t => handleAddressChange(t)}/>
-      {address && 
-        <Wallet 
-        address={address} 
-        ethBalance={ethBalance ?? "error"}
-        tokens={tokens} 
-        handleAddToken={(token) => handleAddToken(token)}/>
-      }
+        <Switch>
+          <Route exact path='/' component={walletSearch}/>
+          <Route path='/:walletId' render={() => walletView(location.pathname.substring(1))}/>
+        </Switch>
     </div>
   );
 }
