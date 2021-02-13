@@ -17,9 +17,8 @@ const columns =[
     }
 ]
 
-const dataToDataSource = (data: Map<Token,number>) => {
-    let items = Array.from(data);
-    return items.map(item => {
+const dataToDataSource = (data: [Token,number][]) => {
+    return data.map(item => {
         return  {
             symbol: item[0].symbol,
             amount: item[1]
@@ -28,11 +27,11 @@ const dataToDataSource = (data: Map<Token,number>) => {
 }
 
 export type AddableTableProps = {
-    tokens: Map<Token,number>,
-    addToken: (tokenAddress: string) => Promise<void>;
+    tokens: [Token,number][],
+    onAdd: (tokenAddress: string) => Promise<void>;
 }
 
-export const AddableTable = ({tokens, addToken: tryAddToken}: AddableTableProps) => {
+export const AddableTable = ({tokens, onAdd: onAddToken}: AddableTableProps) => {
     
     const [isModalVisible, setModalVisible] = useState(false);
 
@@ -51,7 +50,7 @@ export const AddableTable = ({tokens, addToken: tryAddToken}: AddableTableProps)
             <Table 
             pagination={false}
             showHeader={false}
-            dataSource={dataToDataSource(tokens)} 
+            dataSource={data} 
             columns={columns}/>
         }
         <Tooltip title={"Add Token"} >
@@ -59,7 +58,7 @@ export const AddableTable = ({tokens, addToken: tryAddToken}: AddableTableProps)
         </Tooltip>
         <AddTokenModal 
         isModalVisible={isModalVisible} 
-        tryAddToken={tryAddToken}
+        onAdd={onAddToken}
         onRequestClose={hideModal}/>
     </div>
 }

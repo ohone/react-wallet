@@ -5,13 +5,13 @@ import './AddTokenModal.css'
 
 export type AddTokenModalProps = {
     isModalVisible: boolean;
-    tryAddToken: (tokenAddress: string) => Promise<void>;
+    onAdd: (tokenAddress: string) => Promise<void>;
     onRequestClose: () => void;
 }
 
 type MessageState = null | 'error';
 
-export const AddTokenModal = ({isModalVisible, tryAddToken, onRequestClose}: AddTokenModalProps) => {
+export const AddTokenModal = ({isModalVisible, onAdd: tryAddToken, onRequestClose}: AddTokenModalProps) => {
     const [message, setMessage] = useState<string | null>(null);
 
     const GetMessage = (state: Exclude<MessageState, null>, message: string) => {
@@ -28,6 +28,7 @@ export const AddTokenModal = ({isModalVisible, tryAddToken, onRequestClose}: Add
     return <Modal 
         className='AddTokenModal'
         contentLabel="add token" 
+        ariaHideApp={false}
         isOpen={isModalVisible}
         shouldCloseOnOverlayClick={true}
         shouldCloseOnEsc={true}
