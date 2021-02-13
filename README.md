@@ -1,4 +1,4 @@
-# Ethereum/ERC20 Wallet Written in React
+# Ethereum/ERC20 Wallet
 
 ### Key features:
 
