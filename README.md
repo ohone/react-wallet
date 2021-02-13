@@ -5,9 +5,7 @@
 - typescript
 - functional components
 - query against ethereum via infura.io
-
-### Aspirational Features:
-- offline mode (service workers)
+- config saved in url (bookmark to save)
 
 ## Available Scripts
 
