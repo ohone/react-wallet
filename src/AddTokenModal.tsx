@@ -1,58 +1,39 @@
-import React, { useState } from 'react';
+import React from 'react';
 import Modal from 'react-modal';
 import { Alert, Input, Card } from "antd";
 import './AddTokenModal.css'
 
-export type AddTokenModalProps = {
-    isModalVisible: boolean;
-    onAdd: (tokenAddress: string) => Promise<void>;
+export type AddItemModalProps = {
+    message?: string | undefined,
+    onAdd: (item: string) => void;
     onRequestClose: () => void;
 }
 
-type MessageState = null | 'error';
-
-export const AddTokenModal = ({isModalVisible, onAdd: tryAddToken, onRequestClose}: AddTokenModalProps) => {
-    const [message, setMessage] = useState<string | null>(null);
-
-    const GetMessage = (state: Exclude<MessageState, null>, message: string) => {
-        return <Alert message={message} type={state}  showIcon/>
+export const AddItemModal = ({message, onAdd, onRequestClose}: AddItemModalProps) => {
+    const GetMessage = (message: string) => {
+        return <Alert message={message}  showIcon/>
     }
 
-    const [messageState, setMessageState] = useState<MessageState>(null);
-
     let errorMessage;
-    if (messageState){
-        errorMessage = GetMessage(messageState, message!);
+    if (message){
+        errorMessage = GetMessage(message!);
     }
 
     return <Modal 
         className='AddTokenModal'
         contentLabel="add token" 
         ariaHideApp={false}
-        isOpen={isModalVisible}
+        isOpen={true}
         shouldCloseOnOverlayClick={true}
         shouldCloseOnEsc={true}
-        onRequestClose={() => {
-            onRequestClose(); 
-            setMessageState(null);
-            }}>
-
+        onRequestClose={() => {onRequestClose(); }}>
             {errorMessage}
             <Card title='Add Token'>
                 <Input 
                 className='AddTokenInput' 
                 placeholder='enter token address' 
                 size='large' 
-                onPressEnter={e => {
-                    tryAddToken(e.currentTarget.value)
-                    .then(() => {
-                        onRequestClose();
-                    })
-                    .catch(err => {
-                        setMessage(err); 
-                        setMessageState("error");
-                    });
-                    }}/>
+                onPressEnter={e => { onAdd(e.currentTarget.value); }}/>
             </Card>
         </Modal>
 }

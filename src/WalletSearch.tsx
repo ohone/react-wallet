@@ -3,7 +3,7 @@ import './WalletSearch.css';
 import React from 'react';
 
 export interface WalletSearchProps {
-    onAddressEntered: (walletAddress: string) => Promise<void>;
+    onAddressEntered: (walletAddress: string) => void;
 }
 
 export const WalletSearch = ({onAddressEntered} : WalletSearchProps) => {
@@ -11,7 +11,7 @@ export const WalletSearch = ({onAddressEntered} : WalletSearchProps) => {
 
     const handleAddressEnter = async (text: string | null) : Promise<void> => {
         if (AddressPopulated(text)){
-            await onAddressEntered(text!);
+            onAddressEntered(text!);
         }
     }
 
@@ -20,9 +20,9 @@ export const WalletSearch = ({onAddressEntered} : WalletSearchProps) => {
         placeholder="enter wallet address" 
         size="large" 
         onChange={(e) => updateText(e.currentTarget.value)}
-        onPressEnter={async () => await handleAddressEnter(text!)}/>
+        onPressEnter={() => handleAddressEnter(text!)}/>
     <Button 
-        onClick={async () => await handleAddressEnter(text!)}
+        onClick={() => handleAddressEnter(text!)}
         size='large'> 
         Load 
     </Button>

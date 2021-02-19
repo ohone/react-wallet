@@ -1,14 +1,13 @@
 import React, { useState } from 'react';
 import { Table, Button, Tooltip } from "antd";
-import { Token } from './primitives/Token';
 import './AddableTable.css'
-import { AddTokenModal } from './AddTokenModal';
+import { AddItemModal as AddItemModal } from './AddTokenModal';
 
 const columns =[
     {
         title:"Symbol",
-        dataIndex:"symbol",
-        key:"symbol"
+        dataIndex:"key",
+        key:"key"
     },
     {
         title:"Amount",
@@ -17,21 +16,21 @@ const columns =[
     }
 ]
 
-const dataToDataSource = (data: [Token,number][]) => {
+const dataToDataSource = (data: [key: string, count: number][]) => {
     return data.map(item => {
         return  {
-            symbol: item[0].symbol,
+            key: item[0],
             amount: item[1]
         }
     })
 }
 
 export type AddableTableProps = {
-    tokens: [Token,number][],
-    onAdd: (tokenAddress: string) => Promise<void>;
+    tokens: [string,number][],
+    onAdd: (tokenAddress: string) => void;
 }
 
-export const AddableTable = ({tokens, onAdd: onAddToken}: AddableTableProps) => {
+export const AddableTable = ({tokens, onAdd}: AddableTableProps) => {
     
     const [isModalVisible, setModalVisible] = useState(false);
 
@@ -45,20 +44,25 @@ export const AddableTable = ({tokens, onAdd: onAddToken}: AddableTableProps) => 
 
     let data = dataToDataSource(tokens);
 
-    return <div className="AddableTable">
-        {data.length > 0 &&
-            <Table 
-            pagination={false}
-            showHeader={false}
-            dataSource={data} 
-            columns={columns}/>
+    return (
+    <div>
+        <div className="AddableTable">
+            {data.length > 0 &&
+                <Table 
+                pagination={false}
+                showHeader={false}
+                dataSource={data} 
+                columns={columns}/>
+            }
+            <Tooltip title={"Add Token"} >
+                <Button className='AddTokenButton' onMouseDown={showModal} block>+</Button>
+            </Tooltip>
+        </div>
+
+        {isModalVisible &&
+            <AddItemModal 
+            onAdd={(token) => {onAdd(token); hideModal();}}
+            onRequestClose={hideModal}/>
         }
-        <Tooltip title={"Add Token"} >
-            <Button className='AddTokenButton' onClick={showModal} block>+</Button>
-        </Tooltip>
-        <AddTokenModal 
-        isModalVisible={isModalVisible} 
-        onAdd={onAddToken}
-        onRequestClose={hideModal}/>
-    </div>
+    </div>)
 }
