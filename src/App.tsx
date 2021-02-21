@@ -66,6 +66,12 @@ function App() {
                 .catch(err => console.log(err))
           }
         }
+
+        const tokensToRemove = Array.from(newTokenBalances.keys()).filter(ot => wallet.TokenAddresses.filter(nt => nt == ot).length == 0)
+        for(const removedToken of tokensToRemove){
+          newTokenBalances.delete(removedToken);
+        }
+
         newWallet.TokenBalances = newTokenBalances
         return newWallet
       }
@@ -84,6 +90,17 @@ function App() {
     })
   }
 
+  const handleRemoveToken = (tokenAddress : string): void => {
+    if (!wallet!.TokenAddresses.some(t => t === tokenAddress)){
+      return
+    }
+    setWallet(wallet => {
+      const newTokenAddresses = wallet!.TokenAddresses.filter(o => o != tokenAddress);
+      wallet!.TokenAddresses = newTokenAddresses
+      return { ...wallet! }
+    })
+  }
+
   return (
     <div className="App">
       {!address && <ImportWalletModal onAdd={setAddress}/>}
@@ -97,7 +114,8 @@ function App() {
             address={populatedWallet.Address} 
             //ethBalance={ethBalance}
             tokens={populatedWallet.TokenBalances} 
-            handleAddToken={(token) => handleAddToken(token)}/>}
+            handleAddToken={handleAddToken}
+            handleRemoveToken={handleRemoveToken}/>}
     </div>
   )
 }

@@ -8,14 +8,15 @@ export type WalletProps = {
     address: string;
     ethBalance?: number;
     tokens: Map<string,number>,
-    handleAddToken: (tokenAddress: string) => void
+    handleAddToken: (tokenAddress: string) => void,
+    handleRemoveToken: (tokenAddress: string) => void,
 }
 
-export const Wallet = ({address, ethBalance, tokens, handleAddToken} : WalletProps) => {
+export const Wallet = ({address, tokens, handleAddToken, handleRemoveToken} : WalletProps) => {
     return (
     <div className='Wallet'> 
         <Card title={address} className='WalletCard'>
-            <AddableTable tokens={tokens} onAdd={handleAddToken}/>
+            <AddableTable tokens={tokens} onAdd={handleAddToken} onRemove={handleRemoveToken}/>
         </Card>
     </div>)
 };

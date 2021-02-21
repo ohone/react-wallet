@@ -5,22 +5,38 @@ import { AddItemModal as AddItemModal } from './AddTokenModal';
 
 const columns =[
     {
-        title:"Symbol",
-        dataIndex:"key",
-        key:"key"
+        title:"Address",
+        dataIndex:"Address",
     },
     {
         title:"Amount",
-        dataIndex:"amount",
-        key:"amount"
+        dataIndex:"Amount",
+    },
+    {
+        title:"Action",
+        dataIndex: 'Action',
+        render: (_: string, record: DataType ) => {
+            const component =  (<a onClick={() => record.onRemove()}>Remove</a>) as React.ReactNode
+          //  component.displayName = "lol"
+            return component;
+        }
     }
 ]
 
-const dataToDataSource = (data: Map<string,number>) => {
-    return Array.from(data.keys()).map(item => {
-        return  {
-            key: item,
-            amount: data.get(item)
+interface DataType {
+    Key: number,
+    Address: string,
+    Amount: number,
+    onRemove: () => void
+}
+
+const dataToDataSource = (data: Map<string,number>, removeHandler: (address: string) => void) : DataType[] => {
+    return Array.from(data.keys()).map((item,i) => {
+        return {
+            Key: i,
+            Address: item,
+            Amount: data.get(item)!,
+            onRemove: () => removeHandler(item)
         }
     })
 }
@@ -28,9 +44,10 @@ const dataToDataSource = (data: Map<string,number>) => {
 export type AddableTableProps = {
     tokens: Map<string,number>,
     onAdd: (tokenAddress: string) => void;
+    onRemove: (tokenAddress: string) => void;
 }
 
-export const AddableTable = ({tokens, onAdd}: AddableTableProps) => {
+export const AddableTable = ({tokens, onAdd, onRemove}: AddableTableProps) => {
     
     const [isModalVisible, setModalVisible] = useState(false);
 
@@ -42,7 +59,7 @@ export const AddableTable = ({tokens, onAdd}: AddableTableProps) => {
         setModalVisible(true);
     }
 
-    let data = dataToDataSource(tokens);
+    let data = dataToDataSource(tokens, onRemove);
 
     return (
     <div>
