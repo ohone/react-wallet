@@ -68,8 +68,8 @@ export const AddableTable = ({tokens, onAdd, onRemove}: AddableTableProps) => {
         {isModalVisible &&
             <AddItemModal 
             onAdd={(token) => {
-                onAdd(token); 
-                setModalVisible(true);
+                onAdd(token);
+                setModalVisible(false)
             }}
             onRequestClose={() => setModalVisible(false)}/>
         }

@@ -6,14 +6,21 @@ import { useStickyState } from './utils/Utilities'
 import { IEthereumClient } from './web3/IEthereumClient'
 import { MockEthereumClient } from './web3/MockEthereumClient'
 import { Wallet } from './Wallet'
+import { ClientSwitch } from './ClientSwitch'
+import { InfuraEthereumClient } from './web3/InfuraEthereumClient'
   
-const client : IEthereumClient = new MockEthereumClient()
+const mockClient : IEthereumClient = new MockEthereumClient()
+const client : IEthereumClient = new InfuraEthereumClient();
 
 function App() {
+  const [live, setLive] = useStickyState(false, 'live');
   const [address, setAddress] = useStickyState<string | undefined>(undefined, "currentAddress")
-
+  const ToggleClient = () => {
+    setLive(!live);
+  }
   return (
     <div className="App">
+      <ClientSwitch onChange={ToggleClient}/>
       {!address && <ImportWalletModal onAdd={setAddress}/>}
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
@@ -23,7 +30,7 @@ function App() {
       </header>
           {address && <Wallet 
             address={address} 
-            ethClient={client}/>}
+            ethClient={live ? mockClient : client}/>}
     </div>
   )
 }
