@@ -12,7 +12,7 @@ export type WalletProps = {
     handleRemoveToken: (tokenAddress: string) => void,
 }
 
-export const Wallet = ({address, tokens, handleAddToken, handleRemoveToken} : WalletProps) => {
+export const WalletView = ({address, tokens, handleAddToken, handleRemoveToken} : WalletProps) => {
     return (
     <div className='Wallet'> 
         <Card title={address} className='WalletCard'>

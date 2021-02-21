@@ -17,7 +17,6 @@ const columns =[
         dataIndex: 'Action',
         render: (_: string, record: DataType ) => {
             const component =  (<a onClick={() => record.onRemove()}>Remove</a>) as React.ReactNode
-          //  component.displayName = "lol"
             return component;
         }
     }
