@@ -24,7 +24,7 @@ export const AddItemModal = ({message, onAdd, onRequestClose}: AddItemModalProps
         contentLabel="add token" 
         ariaHideApp={false}
         isOpen={true}
-        shouldCloseOnOverlayClick={false}
+        shouldCloseOnOverlayClick={true}
         shouldCloseOnEsc={true}
         onRequestClose={() => {onRequestClose(); }}>
             {errorMessage}

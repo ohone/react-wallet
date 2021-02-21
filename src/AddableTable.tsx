@@ -16,8 +16,7 @@ const columns =[
         title:"Action",
         dataIndex: 'Action',
         render: (_: string, record: DataType ) => {
-            const component =  (<a onClick={() => record.onRemove()}>Remove</a>) as React.ReactNode
-            return component;
+            return (<a onClick={() => record.onRemove()}>Remove</a>) as React.ReactNode
         }
     }
 ]
@@ -49,16 +48,7 @@ export type AddableTableProps = {
 export const AddableTable = ({tokens, onAdd, onRemove}: AddableTableProps) => {
     
     const [isModalVisible, setModalVisible] = useState(false);
-
-    const hideModal = () => {
-        setModalVisible(false);
-    }
-
-    const showModal = () => {
-        setModalVisible(true);
-    }
-
-    let data = dataToDataSource(tokens, onRemove);
+    const data = dataToDataSource(tokens, onRemove);
 
     return (
     <div>
@@ -71,14 +61,17 @@ export const AddableTable = ({tokens, onAdd, onRemove}: AddableTableProps) => {
                 columns={columns}/>
             }
             <Tooltip title={"Add Token"} >
-                <Button className='AddTokenButton' onMouseDown={showModal} block>+</Button>
+                <Button className='AddTokenButton' onMouseDown={() => setModalVisible(true)} block>+</Button>
             </Tooltip>
         </div>
 
         {isModalVisible &&
             <AddItemModal 
-            onAdd={(token) => {onAdd(token); hideModal();}}
-            onRequestClose={hideModal}/>
+            onAdd={(token) => {
+                onAdd(token); 
+                setModalVisible(true);
+            }}
+            onRequestClose={() => setModalVisible(false)}/>
         }
     </div>)
 }
