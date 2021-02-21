@@ -7,7 +7,7 @@ import React from 'react';
 export type WalletProps = {
     address: string;
     ethBalance?: number;
-    tokens: [token: string, count: number][],
+    tokens: Map<string,number>,
     handleAddToken: (tokenAddress: string) => void
 }
 

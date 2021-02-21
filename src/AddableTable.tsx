@@ -16,17 +16,17 @@ const columns =[
     }
 ]
 
-const dataToDataSource = (data: [key: string, count: number][]) => {
-    return data.map(item => {
+const dataToDataSource = (data: Map<string,number>) => {
+    return Array.from(data.keys()).map(item => {
         return  {
-            key: item[0],
-            amount: item[1]
+            key: item,
+            amount: data.get(item)
         }
     })
 }
 
 export type AddableTableProps = {
-    tokens: [string,number][],
+    tokens: Map<string,number>,
     onAdd: (tokenAddress: string) => void;
 }
 
