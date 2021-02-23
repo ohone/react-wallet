@@ -6,6 +6,7 @@ import { WalletView } from './WalletView';
 import { useStickyState } from './utils/Utilities';
 import { EthereumWallet } from './models/EthereumWallet';
 import { PopulatedWallet } from './models/PopulatedWallet';
+import { Erc20Token } from './models/Erc20Token';
 
 export type WalletProps = {
     address: string,
@@ -100,12 +101,42 @@ export const Wallet = ({ address, ethClient: client }: WalletProps) => {
         })
     }
 
+    
+    const [tokenInfos, setTokenInfos] = useState<Erc20Token[]>([]);
+    useEffect(() => {
+        if (populatedWallet){
+            const doWork = async () => {
+                const newTokenInfos : Erc20Token[] = [];
+                const newTokens = populatedWallet.TokenAddresses.filter(o => tokenInfos.filter(t => t.ContractAddress == o).length == 0);
+                for(const token of newTokens){
+                    const tokenInfo = await client.getTokenInfo(token);
+                    newTokenInfos.push(tokenInfo)
+                }
+                if (newTokenInfos.length > 0){
+                    setTokenInfos(newTokenInfos.concat(tokenInfos));
+                }
+            }
+            doWork()
+        }
+    }, [populatedWallet])
+    
+    const tokenBalancesToTokens = (tokenBalances: Map<string,number>) : [Erc20Token, number][] =>  {
+        const results : [Erc20Token, number][] = []
+        for (const [address, count] of tokenBalances.entries()){
+            const tokenInfo = tokenInfos.filter(t => t.ContractAddress == address);
+            if (tokenInfo.length > 0){
+                results.push([tokenInfo[0], count / (10 * tokenInfo[0].Decimals)])
+            }
+        }
+        return results;
+    }    
+
     return (
         <div className='Wallet'>
             {populatedWallet && <WalletView
                 address={populatedWallet.Address}
                 //ethBalance={ethBalance}
-                tokens={populatedWallet.TokenBalances}
+                tokens={tokenBalancesToTokens(populatedWallet.TokenBalances)}
                 handleAddToken={handleAddToken}
                 handleRemoveToken={handleRemoveToken} />}
         </div>)

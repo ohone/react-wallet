@@ -1,5 +1,6 @@
 import Web3 from 'web3';
 import { Contract } from 'web3-eth-contract';
+import { Erc20Token } from '../models/Erc20Token';
 import { erc20ABI } from './erc20ABI';
 import { IEthereumClient } from './IEthereumClient';
 
@@ -7,6 +8,24 @@ const web3 = new Web3(
     new Web3.providers.WebsocketProvider("wss://mainnet.infura.io/ws/v3/ff2809ef7851478eaefc9fe4b5539f11"))
 
 export class InfuraEthereumClient implements IEthereumClient{
+
+  async getTokenInfo(tokenAddress: string): Promise<Erc20Token> {
+    const cacheEntry = window.localStorage.getItem(tokenAddress);
+    if(cacheEntry){
+      return JSON.parse(cacheEntry) as Erc20Token;
+    }
+
+    const token : Erc20Token = {
+      ContractAddress: tokenAddress,
+      Ticker: await this.getTokenSymbol(tokenAddress),
+      Decimals: await this.getDecimals(tokenAddress),
+      Name: await this.getTokenName(tokenAddress)
+    }
+    window.localStorage.setItem(tokenAddress, JSON.stringify(token))
+
+    return token
+  }
+  
   getEthBalance = async (walletAddress: string): Promise<number> => {
     let balance = web3.eth.getBalance(walletAddress, (Error) => {
         if (Error){

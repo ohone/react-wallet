@@ -3,53 +3,58 @@ import { Table, Button, Tooltip } from "antd";
 import './AddableTable.css'
 import { AddItemModal as AddItemModal } from './AddTokenModal';
 
-const columns =[
-    {
-        title:"Address",
-        dataIndex:"Address",
-    },
-    {
-        title:"Amount",
-        dataIndex:"Amount",
-    },
-    {
-        title:"Action",
-        dataIndex: 'Action',
-        render: (_: string, record: DataType ) => {
+type rowDefinition = ({
+    title: string;
+    dataIndex: string;
+    render?: ((_: string, record: Removable) => React.ReactNode);
+});
+
+const GetColumnDefinition = <T,>(items: T[]) : rowDefinition[] => {
+    const objectFields = Object.keys(items[0])
+    .map<rowDefinition>(key => ({
+        title: key,
+        dataIndex: key
+    }));
+
+    objectFields.push({
+        title: "Action",
+        dataIndex: "Action",
+        render:(_: string, record: Removable ) => {
             return (<a onClick={() => record.onRemove()}>Remove</a>) as React.ReactNode
         }
-    }
-]
+    });
 
-interface DataType {
-    Key: number,
-    Address: string,
-    Amount: number,
+    return objectFields;
+}
+
+interface Removable {
     onRemove: () => void
 }
 
-const dataToDataSource = (data: Map<string,number>, removeHandler: (address: string) => void) : DataType[] => {
-    return Array.from(data.keys()).map((item,i) => {
-        return {
-            Key: i,
-            Address: item,
-            Amount: data.get(item)!,
-            onRemove: () => removeHandler(item)
-        }
-    })
+
+export type AddableTableProps<T> = {
+    tokens: T[],
+    onAdd: (identifier: string) => void,
+    onRemove: (identifier: string) => void,
+    renderId?: boolean,
+    idPropAccessor: (o: T) => string
 }
 
-export type AddableTableProps = {
-    tokens: Map<string,number>,
-    onAdd: (tokenAddress: string) => void;
-    onRemove: (tokenAddress: string) => void;
-}
+type onlyStringKeys<T> = {
+    [K in keyof T]: T[K] extends string ? K : never
+}[keyof T];
 
-export const AddableTable = ({tokens, onAdd, onRemove}: AddableTableProps) => {
+export const AddableTable = <T,>({tokens, onAdd, onRemove, idPropAccessor}: AddableTableProps<T>) => {
     
     const [isModalVisible, setModalVisible] = useState(false);
-    const data = dataToDataSource(tokens, onRemove);
-
+    
+    const data = tokens.map<T & Removable>(o => {
+        return {
+            ...o,
+            onRemove: () => onRemove(idPropAccessor(o))
+        }
+    })
+    
     return (
     <div>
         <div className="AddableTable">
@@ -58,7 +63,7 @@ export const AddableTable = ({tokens, onAdd, onRemove}: AddableTableProps) => {
                 pagination={false}
                 showHeader={false}
                 dataSource={data} 
-                columns={columns}/>
+                columns={GetColumnDefinition(tokens)}/>
             }
             <Tooltip title={"Add Token"} >
                 <Button className='AddTokenButton' onMouseDown={() => setModalVisible(true)} block>+</Button>

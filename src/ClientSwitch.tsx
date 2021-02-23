@@ -4,12 +4,13 @@ import './Wallet.css';
 import React from 'react';
 
 export type ClientSwitchProps = {
-    onChange: () => void
+    onChange: () => void,
+    toggleState: boolean
 }
 
-export const ClientSwitch = ({onChange} : ClientSwitchProps) => {
+export const ClientSwitch = ({onChange, toggleState} : ClientSwitchProps) => {
     return (
     <div className='Wallet'> 
-        <Switch defaultChecked checkedChildren={"Live"} unCheckedChildren={"Mock"} onChange={onChange}/>
+        <Switch defaultChecked={toggleState} checkedChildren={"Live"} unCheckedChildren={"Mock"} onChange={onChange}/>
     </div>)
 };

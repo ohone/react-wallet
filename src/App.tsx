@@ -20,7 +20,7 @@ function App() {
   }
   return (
     <div className="App">
-      <ClientSwitch onChange={ToggleClient}/>
+      <ClientSwitch onChange={ToggleClient} toggleState={!live}/>
       {!address && <ImportWalletModal onAdd={setAddress}/>}
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
