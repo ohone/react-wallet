@@ -9,8 +9,13 @@ type rowDefinition = ({
     render?: ((_: string, record: Removable) => React.ReactNode);
 });
 
-const GetColumnDefinition = <T,>(items: T[]) : rowDefinition[] => {
-    const objectFields = Object.keys(items[0])
+const GetColumnDefinition = <T,>(items: T[], renderKey?: boolean) : rowDefinition[] => {
+    const allObjectProperties = Object.keys(items[0]);
+    const filteredHeaders = renderKey 
+        ? allObjectProperties
+        : allObjectProperties.filter(o => o != 'Key') 
+
+    const objectFields = filteredHeaders
     .map<rowDefinition>(key => ({
         title: key,
         dataIndex: key
@@ -31,27 +36,25 @@ interface Removable {
     onRemove: () => void
 }
 
-
 export type AddableTableProps<T> = {
     tokens: T[],
     onAdd: (identifier: string) => void,
     onRemove: (identifier: string) => void,
-    renderId?: boolean,
-    idPropAccessor: (o: T) => string
+    renderKey?: boolean
 }
 
 type onlyStringKeys<T> = {
     [K in keyof T]: T[K] extends string ? K : never
 }[keyof T];
 
-export const AddableTable = <T,>({tokens, onAdd, onRemove, idPropAccessor}: AddableTableProps<T>) => {
+export const AddableTable = <T extends {Key: string}>({tokens, onAdd, onRemove, renderKey}: AddableTableProps<T>) => {
     
     const [isModalVisible, setModalVisible] = useState(false);
     
     const data = tokens.map<T & Removable>(o => {
         return {
             ...o,
-            onRemove: () => onRemove(idPropAccessor(o))
+            onRemove: () => onRemove(o.Key)
         }
     })
     
@@ -63,7 +66,7 @@ export const AddableTable = <T,>({tokens, onAdd, onRemove, idPropAccessor}: Adda
                 pagination={false}
                 showHeader={false}
                 dataSource={data} 
-                columns={GetColumnDefinition(tokens)}/>
+                columns={GetColumnDefinition(tokens,renderKey)}/>
             }
             <Tooltip title={"Add Token"} >
                 <Button className='AddTokenButton' onMouseDown={() => setModalVisible(true)} block>+</Button>

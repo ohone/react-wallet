@@ -125,7 +125,7 @@ export const Wallet = ({ address, ethClient: client }: WalletProps) => {
         for (const [address, count] of tokenBalances.entries()){
             const tokenInfo = tokenInfos.filter(t => t.ContractAddress == address);
             if (tokenInfo.length > 0){
-                results.push([tokenInfo[0], count / (10 * tokenInfo[0].Decimals)])
+                results.push([tokenInfo[0], count])
             }
         }
         return results;

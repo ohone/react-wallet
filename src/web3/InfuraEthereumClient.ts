@@ -27,7 +27,7 @@ export class InfuraEthereumClient implements IEthereumClient{
   }
   
   getEthBalance = async (walletAddress: string): Promise<number> => {
-    let balance = web3.eth.getBalance(walletAddress, (Error) => {
+    let balance = await web3.eth.getBalance(walletAddress, (Error) => {
         if (Error){
             console.log(Error);
         }
