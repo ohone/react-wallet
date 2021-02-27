@@ -1,11 +1,10 @@
 # Ethereum/ERC20 Wallet
 
-### Key features:
+### features:
 
-- typescript
-- functional components
-- query against ethereum via infura.io
-- config saved in url (bookmark to save)
+- load wallet, load tokens + balance from wallet
+- state saved in local storage
+- live/mock mode
 
 ## Available Scripts
 
