@@ -9,6 +9,7 @@ import { MockEthereumClient } from './web3/MockEthereumClient'
 import { Wallet } from './Wallet'
 import { ClientSwitch } from './ClientSwitch'
 import { InfuraEthereumClient } from './web3/InfuraEthereumClient'
+import { ToolView } from './ToolView';
   
 const mockClient : IEthereumClient = new MockEthereumClient()
 const client : IEthereumClient = new InfuraEthereumClient();
@@ -30,16 +31,14 @@ function App() {
           </div>
         </Layout.Header>
         <Layout>
-
-        <Layout.Sider width={400}>
-          {address && <Wallet 
-            address={address} 
-            ethClient={live ? mockClient : client}/>}
-        </Layout.Sider>
-
-        <Layout.Content>
-          hello
-        </Layout.Content>
+          <Layout.Sider width={400}>
+            {address && <Wallet 
+              address={address} 
+              ethClient={live ? mockClient : client}/>}
+          </Layout.Sider>
+          <Layout.Content>
+            <ToolView/>
+          </Layout.Content>
         </Layout>
       </Layout>
     </div>
