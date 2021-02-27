@@ -1,5 +1,3 @@
-import 'antd/dist/antd.css';
-import './Wallet.css';
 import React, { useEffect, useState } from 'react';
 import { IEthereumClient } from './web3/IEthereumClient';
 import { WalletView } from './WalletView';

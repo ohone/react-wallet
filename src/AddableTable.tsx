@@ -25,7 +25,7 @@ const GetColumnDefinition = <T,>(items: T[], renderKey?: boolean) : rowDefinitio
         title: "Action",
         dataIndex: "Action",
         render:(_: string, record: Removable ) => {
-            return (<a onClick={() => record.onRemove()}>Remove</a>) as React.ReactNode
+            return (<a onClick={() => record.onRemove()}>x</a>) as React.ReactNode
         }
     });
 

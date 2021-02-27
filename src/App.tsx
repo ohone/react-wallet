@@ -1,4 +1,5 @@
 import React from 'react'
+import { Layout, Card } from "antd";
 import logo from './eth-diamond-rainbow.png'
 import './App.css'
 import { ImportWalletModal } from './ImportWalletModal'
@@ -20,17 +21,27 @@ function App() {
   }
   return (
     <div className="App">
-      <ClientSwitch onChange={ToggleClient} toggleState={!live}/>
       {!address && <ImportWalletModal onAdd={setAddress}/>}
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          <code>Wallet Manager</code>
-        </p>
-      </header>
+      <Layout>
+        <Layout.Header>
+          <div className='header'>
+            <div className='sitetitle'>Wallet Manager</div> 
+            <ClientSwitch onChange={ToggleClient} toggleState={!live}/>
+          </div>
+        </Layout.Header>
+        <Layout>
+
+        <Layout.Sider width={400}>
           {address && <Wallet 
             address={address} 
             ethClient={live ? mockClient : client}/>}
+        </Layout.Sider>
+
+        <Layout.Content>
+          hello
+        </Layout.Content>
+        </Layout>
+      </Layout>
     </div>
   )
 }
