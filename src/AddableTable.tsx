@@ -3,35 +3,6 @@ import { Table, Button, Tooltip } from "antd";
 import './AddableTable.css'
 import { AddItemModal as AddItemModal } from './AddTokenModal';
 
-type rowDefinition = ({
-    title: string;
-    dataIndex: string;
-    render?: ((_: string, record: Removable) => React.ReactNode);
-});
-
-const GetColumnDefinition = <T,>(items: T[], renderKey?: boolean) : rowDefinition[] => {
-    const allObjectProperties = Object.keys(items[0]);
-    const filteredHeaders = renderKey 
-        ? allObjectProperties
-        : allObjectProperties.filter(o => o != 'Key') 
-
-    const objectFields = filteredHeaders
-    .map<rowDefinition>(key => ({
-        title: key,
-        dataIndex: key
-    }));
-
-    objectFields.push({
-        title: "Action",
-        dataIndex: "Action",
-        render:(_: string, record: Removable ) => {
-            return (<a onClick={() => record.onRemove()}>x</a>) as React.ReactNode
-        }
-    });
-
-    return objectFields;
-}
-
 interface Removable {
     onRemove: () => void
 }
@@ -43,11 +14,7 @@ export type AddableTableProps<T> = {
     renderKey?: boolean
 }
 
-type onlyStringKeys<T> = {
-    [K in keyof T]: T[K] extends string ? K : never
-}[keyof T];
-
-export const AddableTable = <T extends {Key: string}>({tokens, onAdd, onRemove, renderKey}: AddableTableProps<T>) => {
+export const AddableTable = <T extends {Key: string, Removable: boolean}>({tokens, onAdd, onRemove, renderKey}: AddableTableProps<T>) => {
     
     const [isModalVisible, setModalVisible] = useState(false);
     
@@ -58,6 +25,37 @@ export const AddableTable = <T extends {Key: string}>({tokens, onAdd, onRemove, 
         }
     })
     
+    type rowDefinition = ({
+        title: string;
+        dataIndex: string;
+        render?: ((_: string, record: T) => React.ReactNode);
+    });
+
+    const GetColumnDefinition = (items: T[], renderKey?: boolean) : rowDefinition[] => {
+        const allObjectProperties = Object.keys(items[0]);
+        const filteredHeaders = renderKey 
+            ? allObjectProperties
+            : allObjectProperties.filter(o => o != 'Key') 
+    
+        const objectFields = filteredHeaders
+        .map<rowDefinition>(key => ({
+            title: key,
+            dataIndex: key
+        }));
+    
+        objectFields.push({
+            title: "Action",
+            dataIndex: "Action",
+            render:(_: string, record: T ) => {
+                return record.Removable 
+                ?  (<a onClick={() => onRemove(record.Key)}>x</a>) as React.ReactNode
+                :  null
+            }
+        });
+    
+        return objectFields;
+    }
+
     return (
     <div>
         <div className="AddableTable">

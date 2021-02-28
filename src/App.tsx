@@ -1,6 +1,5 @@
 import React from 'react'
-import { Layout, Card } from "antd";
-import logo from './eth-diamond-rainbow.png'
+import { Layout } from "antd";
 import './App.css'
 import { ImportWalletModal } from './ImportWalletModal'
 import { useStickyState } from './utils/Utilities'
@@ -37,7 +36,9 @@ function App() {
               ethClient={live ? mockClient : client}/>}
           </Layout.Sider>
           <Layout.Content>
-            <ToolView/>
+            <div className='toolview-container'>
+              <ToolView/>
+            </div>
           </Layout.Content>
         </Layout>
       </Layout>

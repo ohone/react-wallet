@@ -133,7 +133,7 @@ export const Wallet = ({ address, ethClient: client }: WalletProps) => {
         <div className='Wallet'>
             {populatedWallet && <WalletView
                 address={populatedWallet.Address}
-                //ethBalance={ethBalance}
+                ethBalance={populatedWallet.Balance}
                 tokens={tokenBalancesToTokens(populatedWallet.TokenBalances)}
                 handleAddToken={handleAddToken}
                 handleRemoveToken={handleRemoveToken} />}
